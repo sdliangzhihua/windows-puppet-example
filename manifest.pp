@@ -1,4 +1,33 @@
 
+#Create a PowerShell script to download Notepad++
+
+ file { 'C:\Users\Administrator\Desktop\Puppet\DownloadNotepad.ps1':
+    ensure      => 'file',
+    mode        => '0770',
+    owner       => 'Administrator',
+    group       => 'Administrators',
+    content     => '$webClient = New-Object System.Net.webclient
+                    $sourceURL = "http://download.tuxfamily.org/notepadplus/6.5.4/npp.6.5.4.Installer.exe"
+                    $destPath = "C:\Users\Administrator\Desktop\Puppet\npp.6.5.4.Installer.exe"
+                    <#Check to see if the file has been downloaded before, download the file only if it does not exist.#>
+                    if ((Test-path $destPath) -eq $true) {
+                      "File Exists"
+                    }
+                    else {
+                      $webClient.DownloadFile($sourceURL, $destPath)
+                    }',
+   before      => Exec ['DownloadNotepad'],
+  }
+
+#Download Notepad++ if the file does not exist
+
+  exec { 'DownloadNotepad':
+    command     => 'C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -executionpolicy remotesigned C:\Users\Administrator\Desktop\Puppet\DownloadNotepad.ps1',
+    creates     => 'C:\Users\Administrator\Desktop\Puppet\npp.6.5.4.Installer.exe',
+    before      => Package ['Notepad++'],
+	}
+
+
 #Install package Notepad++ Version 6.5.4
 
   package { 'Notepad++':
