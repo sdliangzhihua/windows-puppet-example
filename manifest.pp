@@ -1,7 +1,7 @@
 
 #Install package Notepad++ Version 6.5.4
 
-  package { 'notepad++':
+  package { 'Notepad++':
     ensure      => installed,
     source      => 'C:\\Users\\Administrator\\Desktop\\Puppet\\npp.6.5.4.Installer.exe',
     install_options     => ['/S'],
@@ -52,6 +52,7 @@
   exec { 'CreateSchedTask':
     command     => 'C:\Users\Administrator\Desktop\Puppet\CreateSchedTask.bat',
     subscribe   => File ['C:\Users\Administrator\Desktop\Puppet\CreateSchedTask.bat'],
+	onlyif => ["C:\\Windows\\system32\\cmd.exe /C schtasks /query /tn LogDateTask & if errorlevel 1 (exit /b 0) else exit /b 1"],
   }
 
   
